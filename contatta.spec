@@ -1,11 +1,10 @@
 Name: contatta
-Version: 0.0.13
+Version: 0.0.14
 Release: 1%{?dist}
 Summary: Rest API for FreePBX
 Group: Network
 License: GPLv2
 Source0: %{name}-%{version}.tar.gz
-Source1: contatta.tar.gz
 BuildRequires: nethserver-devtools, gettext
 Buildarch: x86_64
 Requires: nethserver-freepbx, nethserver-samba, lame
@@ -16,7 +15,6 @@ Rest API for FreePBX
 %prep
 %setup
 
-
 %build
 perl createlinks
 for PO in $(find ./ -name "*\.po" | grep 'i18n\/[a-z][a-z]_[A-Z][A-Z]')
@@ -24,10 +22,12 @@ for PO in $(find ./ -name "*\.po" | grep 'i18n\/[a-z][a-z]_[A-Z][A-Z]')
 done
 
 %install
+ls %{buildroot}
 rm -rf %{buildroot}
 (cd root; find . -depth -print | cpio -dump %{buildroot})
 mkdir -p %{buildroot}/usr/src/nethvoice/modules
-mv %{S:1} %{buildroot}/usr/src/contatta/modules/
+tar -czvf contatta.tar.gz module
+mv contatta.tar.gz %{buildroot}/usr/src/contatta/modules/
 
 %{genfilelist} %{buildroot} \
 > %{name}-%{version}-filelist
@@ -42,6 +42,9 @@ rm -rf %{buildroot}
 %doc
 
 %changelog
+* Mon May 03 2021 Jonathan Stevano <jonathan.stevano@ellysse.it> - 0.0.14-1
+- resolved agi REFER bug
+
 * Fri Oct 04 2019 Stefano Fancello <stefano.fancello@nethesis.it> - 0.0.12-1
 - Added mp3 support
 
